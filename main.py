@@ -3,6 +3,7 @@ from dotenv import load_dotenv, find_dotenv
 import requests
 import os
 from datetime import datetime
+from datetime import date
 
 load_dotenv(find_dotenv())
 
@@ -14,15 +15,16 @@ token = os.getenv('TELEGRAM_API_KEY')
 telegram_endpoint = 'https://api.telegram.org/bot'
 chat_id = os.getenv('CHAT_ID')
 
-
-def main():
-    bot = FunBot()
-    weather = bot.prepare(bot.get_forecast())
-    bot.api.send_message(chat_id, weather)
-
+first_date = date(2020, 3, 16)
 
 class FunBot:
     api = Bot(token)
+
+    def greet(self) -> str:
+        today = date.today()
+        diff = (first_date - today).days
+
+        return f"Morning! It's {diff} day of quarantine! Wish you a pleasant day!"
 
     def prepare(self, response):
         res = []
@@ -48,7 +50,7 @@ class FunBot:
     def get_updates():
         res = requests.get(telegram_endpoint + token + '/getUpdates')
 
-        return res.json()
+        return res.content
 
     @staticmethod
     def temp_to_celsius(temp):
@@ -59,3 +61,11 @@ class FunBot:
         return datetime.fromtimestamp(timestamp)
 
 
+def main():
+        bot = FunBot()
+        message = bot.greet()
+        bot.api.send_message(chat_id, message)
+
+
+if __name__ == '__main__':
+    main()
