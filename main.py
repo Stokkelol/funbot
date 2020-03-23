@@ -22,7 +22,7 @@ class FunBot:
 
     def greet(self) -> str:
         today = date.today()
-        diff = (first_date - today).days
+        diff = abs((first_date - today).days)
 
         return f"Morning! It's {diff} day of quarantine! Wish you a pleasant day!"
 
@@ -63,8 +63,7 @@ class FunBot:
 
 def main():
         bot = FunBot()
-        message = bot.greet()
-        bot.api.send_message(chat_id, message)
+        bot.api.send_message(chat_id, bot.greet())
 
 
 if __name__ == '__main__':
